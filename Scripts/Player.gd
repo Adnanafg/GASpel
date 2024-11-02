@@ -52,7 +52,7 @@ var free_look_tilt = 2.5
 
 func _unhandled_input(event):
 #Detta är en funktion som gör att när jag trycker "ESC" så visar den mitt mus pekare
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("pause"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 #Detta är en funktion som gör att när jag trycker vänster click på musen så låser den in mitt mus in i skärmen
 	if event.is_action_pressed("left_click"):

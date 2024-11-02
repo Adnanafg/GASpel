@@ -13,7 +13,7 @@ func _ready():
 
 
 func _on_enemy_dead(_param):
-	print("Enemy died starting respawn timer.")
+	print("starting respawn timer.")
 	var timer = Timer.new()
 	timer.wait_time = respawn_delay
 	timer.timeout.connect(_on_enemytimer_timeout)

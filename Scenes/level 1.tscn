@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://bgt4xny6dwyap"]
+[gd_scene load_steps=14 format=3 uid="uid://bgt4xny6dwyap"]
 
 [ext_resource type="Script" path="res://Scripts/level_1.gd" id="1_ox378"]
+[ext_resource type="PackedScene" uid="uid://c3xjf8qprn8w2" path="res://Scenes/main_menu.tscn" id="2_c1keg"]
 [ext_resource type="PackedScene" uid="uid://b83xuyrrc1kva" path="res://Scenes/enemy.tscn" id="2_skxeu"]
 [ext_resource type="PackedScene" uid="uid://ypmseu0myrtk" path="res://Scenes/player.tscn" id="3_85hsc"]
 [ext_resource type="PackedScene" uid="uid://dscvlaflyefe3" path="res://Scenes/healthpack.tscn" id="3_yhs5l"]
@@ -85,5 +86,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.3661, 1.02771, 14.5855)
 
 [node name="Healthpack4" parent="." instance=ExtResource("3_yhs5l")]
 transform = Transform3D(-1, 8.74073e-08, 1.64626e-09, -8.74073e-08, -0.999291, -0.0376553, -1.64626e-09, -0.0376553, 0.999291, -13.2678, 1.00645, 13.1484)
+
+[node name="MainMenu" parent="." instance=ExtResource("2_c1keg")]
+process_mode = 3
+visible = false
+offset_left = 148.992
+offset_top = 334.773
+offset_right = 148.992
+offset_bottom = 334.773
 
 [connection signal="enemy_died" from="Enemy" to="RespawnManager" method="_on_enemy_dead"]
