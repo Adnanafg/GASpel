@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcmojjmgm8kpa"]
+
+[ext_resource type="Script" path="res://Scripts/Respawn_manager.gd" id="1_foa6a"]
+
+[node name="RespawnManager" type="Node3D"]
+script = ExtResource("1_foa6a")
+
+[node name="enemytimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[connection signal="timeout" from="enemytimer" to="." method="_on_enemytimer_timeout"]

@@ -1,0 +1,135 @@
+[gd_scene load_steps=11 format=3 uid="uid://ypmseu0myrtk"]
+
+[ext_resource type="Script" path="res://Scripts/Player.gd" id="1_auq80"]
+[ext_resource type="PackedScene" uid="uid://cbfc050rpgrgy" path="res://Scenes/ak_74u.tscn" id="2_ebnk8"]
+[ext_resource type="Script" path="res://Scripts/crosshair.gd" id="3_i48co"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pyru2"]
+radius = 0.3
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f1jo5"]
+albedo_color = Color(0.145098, 0.505882, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_r8xwh"]
+material = SubResource("StandardMaterial3D_f1jo5")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_owwxa"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_idbdx"]
+height = 1.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gargc"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yilwg"]
+bg_color = Color(0.137255, 1, 0, 1)
+
+[node name="player" type="CharacterBody3D" groups=["player"]]
+script = ExtResource("1_auq80")
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("CapsuleShape3D_pyru2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_r8xwh")
+
+[node name="Standing_collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00543308, -0.00927496, 0.00328678)
+shape = SubResource("CapsuleShape3D_owwxa")
+
+[node name="Crouching_collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.416292, 0)
+shape = SubResource("CapsuleShape3D_idbdx")
+disabled = true
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0.00248909, 0.496207, 0.00246298)
+
+[node name="Nacke" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.342042)
+
+[node name="Huvud" type="Node3D" parent="Nacke"]
+
+[node name="Camera3D" type="Camera3D" parent="Nacke/Huvud"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.735967, 0)
+fov = 56.1501
+
+[node name="AK74U" parent="Nacke/Huvud/Camera3D" instance=ExtResource("2_ebnk8")]
+transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 0.094055, -0.223819, -0.196197)
+
+[node name="Control" type="Control" parent="Nacke/Huvud/Camera3D"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1919.0
+offset_bottom = 1076.0
+
+[node name="healthbar" type="ProgressBar" parent="Nacke/Huvud/Camera3D/Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 327.0
+offset_right = 277.0
+offset_bottom = 362.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/background = SubResource("StyleBoxFlat_gargc")
+theme_override_styles/fill = SubResource("StyleBoxFlat_yilwg")
+value = 100.0
+metadata/_edit_use_anchors_ = true
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 21.0
+offset_right = 20.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Crosshair" type="CenterContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_i48co")
+
+[node name="Top" type="Line2D" parent="UI/Crosshair"]
+points = PackedVector2Array(0, -5, 0, -15)
+width = 2.0
+default_color = Color(0, 1, 0, 1)
+
+[node name="Right" type="Line2D" parent="UI/Crosshair"]
+points = PackedVector2Array(5, 0, 15, 0)
+width = 2.0
+default_color = Color(0, 1, 0, 1)
+
+[node name="Bottom" type="Line2D" parent="UI/Crosshair"]
+points = PackedVector2Array(0, 5, 0, 15)
+width = 2.0
+default_color = Color(0, 1, 0, 1)
+
+[node name="Left" type="Line2D" parent="UI/Crosshair"]
+points = PackedVector2Array(-5, 0, -15, 0)
+width = 2.0
+default_color = Color(0, 1, 0, 1)
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_Area_3d_body_entered"]

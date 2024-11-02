@@ -1,0 +1,308 @@
+[gd_scene load_steps=14 format=3 uid="uid://bgt4xny6dwyap"]
+
+[ext_resource type="PackedScene" uid="uid://cbfc050rpgrgy" path="res://Scenes/ak_74u.tscn" id="1_hh17y"]
+[ext_resource type="PackedScene" uid="uid://b83xuyrrc1kva" path="res://enemy.tscn" id="2_skxeu"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl7s0"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_o3dmt"]
+sky_material = SubResource("ProceduralSkyMaterial_bl7s0")
+
+[sub_resource type="Environment" id="Environment_wkp57"]
+background_mode = 2
+sky = SubResource("Sky_o3dmt")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_26neo"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_q3x26"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wmyvf"]
+
+[sub_resource type="GDScript" id="GDScript_uww0w"]
+script/source = "extends CharacterBody3D
+
+# Character Nodes
+@onready var nacke: Node3D = $Nacke
+@onready var huvud: Node3D = $Nacke/Huvud
+@onready var standing_collision: CollisionShape3D = $Standing_collision
+@onready var crouching_collision: CollisionShape3D = $Crouching_collision
+@onready var ray_cast_3d: RayCast3D = $RayCast3D
+@onready var camera_3d: Camera3D = $Nacke/Huvud/Camera3D
+@onready var gun_animation = $Nacke/Huvud/Camera3D/AK74U/AnimationPlayer
+@onready var pistolpipa = $Nacke/Huvud/Camera3D/AK74U/RayCast3D
+@onready var healthbar: ProgressBar = $Nacke/Huvud/Camera3D/healthbar
+
+
+var max_health = 100.0
+var current_health = max_health
+var is_alive = true
+var damage_value = 10
+var heal_value = 25
+
+var skott = preload(\"res://Scenes/skott.tscn\")
+var instance
+
+var current_speed = 5.0
+var lerp_speed = 13.0
+const walking_speed = 5.0
+const sprinting_speed = 8.0
+const crouching_speed = 3.0
+const jump_velocity = 4.5
+const mouse_sensitivty = 0.2
+var crouching_height= -0.4
+
+var slide_timer = 0.0
+var slide_timer_max = 1.2
+var slide = false
+var slide_vector = Vector2.ZERO
+var slide_speed = 10.0
+var can_slide = true
+
+var walking = false
+var sprinting = false
+var crouching = false
+
+var direction = Vector3.ZERO
+var free_looking = false
+var free_look_tilt = 2.5
+
+
+func _ready():
+	$Area3D.connect(\"body_entered\", self, \"_on_body_entered\")
+
+func _unhandled_input(event):
+#Detta är en funktion som gör att när jag trycker \"ESC\" så visar den mitt mus pekare
+	if event.is_action_pressed(\"ui_cancel\"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+#Detta är en funktion som gör att när jag trycker vänster click på musen så låser den in mitt mus in i skärmen
+	if event.is_action_pressed(\"left_click\"):
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+#kamera kontroll
+func _input(event):
+	if event is InputEventMouseMotion:
+		if free_looking:
+			nacke.rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivty))
+			nacke.rotation.y = clamp(nacke.rotation.y,deg_to_rad(-100), deg_to_rad(100))
+		else:
+			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivty))
+		huvud.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivty))
+		huvud.rotation.x = clamp(huvud.rotation.x,deg_to_rad(-90),deg_to_rad(90))
+
+
+func _physics_process(delta):
+	#Tar våra inputs och översätter de till rörelse i spelet
+	var input_dir := Input.get_vector(\"left\", \"right\", \"up\", \"down\")
+
+#Skjut och skott animations
+	if Input.is_action_pressed(\"shoot\"):
+		if !gun_animation.is_playing():
+			gun_animation.play(\"shoot\")
+			instance = skott.instantiate()
+			instance.position = pistolpipa.global_position
+			instance.transform.basis = pistolpipa.global_transform.basis
+			get_tree().root.add_child(instance)
+			print(\"bullet spawned at: \", instance.global_transform.origin)
+			print(\"gun barrel transform: \", pistolpipa.global_transform.origin, \" | \", pistolpipa.global_transform.basis)
+
+	#crouch logik
+	if Input.is_action_pressed(\"crouch\"):
+		current_speed = crouching_speed
+		huvud.position.y = lerp(huvud.position.y, + crouching_height,delta*lerp_speed)
+		
+		standing_collision.disabled = true
+		crouching_collision.disabled = false
+		
+		#slide början logik
+		if sprinting && input_dir != Vector2.ZERO and can_slide and not slide:
+			slide = true
+			slide_timer = slide_timer_max
+			slide_vector = input_dir
+			free_looking = true
+			print(\"slide start\")
+			can_slide = false
+			
+		walking = false
+		sprinting = false
+		crouching = true
+		
+	elif !ray_cast_3d.is_colliding():
+		
+		#standing logik
+		crouching_collision.disabled = true
+		standing_collision.disabled = false
+		
+		huvud.position.y = lerp(huvud.position.y,0.0,delta*lerp_speed)
+		
+		
+	#sprint logik
+	if Input.is_action_just_pressed(\"sprint\") and not sprinting:
+	# Låta spelare slida en gång per sprint
+		current_speed = sprinting_speed
+		walking = false
+		sprinting = true
+		crouching = false
+		can_slide = true
+
+	elif not Input.is_action_pressed(\"sprint\"):
+	# Reset sprinting och walking state
+		current_speed = walking_speed
+		walking = true
+		sprinting = false
+		crouching = false
+		can_slide = false  
+		
+	#Ta hand om freelook
+	if Input.is_action_pressed(\"free_look\") or slide:
+		free_looking = true
+		camera_3d.rotation.z = deg_to_rad(rotation.y*free_look_tilt)
+	else:
+		free_looking = false
+		nacke.rotation.y = lerp(nacke.rotation.y,0.0,delta*lerp_speed)
+		camera_3d.rotation.z = lerp(camera_3d.rotation.z,0.0,delta*lerp_speed)
+		
+	#Slide logik
+	if slide:
+		slide_timer -= delta
+		if slide_timer <= 0:
+			slide = false
+			print(\"slide slut\")
+			free_looking = false
+			
+	# Gravitation logik.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Hopp logik.
+	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
+		velocity.y = jump_velocity
+		
+	direction = lerp(direction,(transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(),delta*lerp_speed)
+	
+	if slide:
+		direction = (transform.basis * Vector3(slide_vector.x,0,slide_vector.y)).normalized()
+	
+	if direction:
+		velocity.x = direction.x * current_speed
+		velocity.z = direction.z * current_speed
+		
+		if slide:
+			velocity.x = direction.x * slide_timer * slide_speed
+			velocity.z = direction.z * slide_timer * slide_speed
+	else:
+		velocity.x = move_toward(velocity.x, 0, current_speed)
+		velocity.z = move_toward(velocity.z, 0, current_speed)
+		
+	move_and_slide()
+
+func take_damage(amount: int) -> void:
+	if is_alive:
+		current_health -= amount
+		if current_health <= 0:
+			die()
+			
+func heal(amount: int) -> void:
+	if is_alive:
+		current_health += amount
+		if current_health > max_health:
+			current_health = max_health
+			
+func die () -> void:
+	is_alive = false
+	print(\"player is dead\")
+	
+func _on_body_entered(body: Node) -> void:
+	if body.is_in_group(\"enemies\"): 
+		print(\"Enemy collided!\")
+		take_damage (damage_value)
+		
+	if body.is_in_group(\"healing_items\"): 
+		heal(heal_value)
+		body.queue_free()
+		
+func update_health_bar() -> void:
+	healthbar.value = current_health
+"
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7flhe"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ffllk"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_523sh"]
+height = 1.2
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ynu3t"]
+
+[node name="Enviorment" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0906105, -0.0775933, -0.631436)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_wkp57")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0923615, 0.141129, 0.0637932)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_26neo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 20, 0.00543785, 0, 0.0463082)
+mesh = SubResource("BoxMesh_q3x26")
+surface_material_override/0 = SubResource("StandardMaterial3D_wmyvf")
+
+[node name="Spelare" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.12266, 0.680742, -1.86166)
+script = SubResource("GDScript_uww0w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Spelare"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.812794, 0)
+mesh = SubResource("CapsuleMesh_7flhe")
+skeleton = NodePath("../Nacke/Huvud")
+
+[node name="Standing_collision" type="CollisionShape3D" parent="Spelare"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.813, 0)
+shape = SubResource("CapsuleShape3D_ffllk")
+
+[node name="Crouching_collision" type="CollisionShape3D" parent="Spelare"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.421087, 0)
+shape = SubResource("CapsuleShape3D_523sh")
+disabled = true
+
+[node name="RayCast3D" type="RayCast3D" parent="Spelare"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00114024, -0.0131252, -0.000304323)
+target_position = Vector3(0, 2, 0)
+
+[node name="Nacke" type="Node3D" parent="Spelare"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Huvud" type="Node3D" parent="Spelare/Nacke"]
+
+[node name="Camera3D" type="Camera3D" parent="Spelare/Nacke/Huvud"]
+transform = Transform3D(1, 1.73473e-17, -7.45058e-09, 0, 1, 2.32831e-09, 7.45058e-09, -2.32831e-09, 1, -0.041, 0.8, -0.434)
+fov = 63.0502
+
+[node name="AK74U" parent="Spelare/Nacke/Huvud/Camera3D" instance=ExtResource("1_hh17y")]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 0.336142, -1.1108, -0.698001)
+
+[node name="healthbar" type="ProgressBar" parent="Spelare/Nacke/Huvud/Camera3D"]
+offset_right = 236.0
+offset_bottom = 27.0
+value = 100.0
+
+[node name="Area3D" type="Area3D" parent="Spelare"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Spelare/Area3D" groups=["player"]]
+shape = SubResource("CapsuleShape3D_ynu3t")
+
+[node name="Enemy" parent="." instance=ExtResource("2_skxeu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.79682, 2.89494)

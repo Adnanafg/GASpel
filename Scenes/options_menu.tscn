@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3ohvr0v2x2xf"]
+
+[ext_resource type="Script" path="res://Scripts/options_menu.gd" id="1_ybe2t"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ybe2t")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 117.0
+offset_bottom = 137.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Sensitivty" type="SpinBox" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Resolution" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "2560x1440"
+popup/item_0/id = 1
+popup/item_1/text = "1920x1080"
+popup/item_1/id = 2
+popup/item_2/text = "1600x900"
+popup/item_2/id = 3
+popup/item_3/text = "1280x720"
+popup/item_3/id = 4
+
+[node name="Window Type" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Fullscreen"
+popup/item_0/id = 1
+popup/item_1/text = "Windowed"
+popup/item_1/id = 2
+
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Back
+"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 117.0
+offset_top = 4.0
+offset_right = 229.0
+offset_bottom = 44.0
+text = "Sensitivity
+"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 36.0
+offset_right = 243.0
+offset_bottom = 76.0
+text = "Resolution"
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 74.0
+offset_right = 263.0
+offset_bottom = 114.0
+text = "Window Type"
+
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Sensitivty" to="." method="_on_sensitivty_value_changed"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/Resolution" to="." method="_on_resolution_item_selected"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/Window Type" to="." method="_on_window_type_item_selected"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://dscvlaflyefe3"]
+
+[ext_resource type="Script" path="res://Scripts/healthpack_logik.gd" id="1_ai6y8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_844wt"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cki5i"]
+material = SubResource("StandardMaterial3D_844wt")
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qmrdi"]
+
+[node name="Healthpack" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1)
+script = ExtResource("1_ai6y8")
+
+[node name="Timer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 2.0
+one_shot = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_cki5i")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_qmrdi")
+
+[connection signal="timeout" from="Timer" to="." method="_on_respawn_timeout"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

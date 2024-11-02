@@ -1,0 +1,80 @@
+[gd_scene load_steps=13 format=3 uid="uid://bgt4xny6dwyap"]
+
+[ext_resource type="Script" path="res://Scripts/level_1.gd" id="1_ox378"]
+[ext_resource type="PackedScene" uid="uid://b83xuyrrc1kva" path="res://Scenes/enemy.tscn" id="2_skxeu"]
+[ext_resource type="PackedScene" uid="uid://ypmseu0myrtk" path="res://Scenes/player.tscn" id="3_85hsc"]
+[ext_resource type="PackedScene" uid="uid://dscvlaflyefe3" path="res://Scenes/healthpack.tscn" id="3_yhs5l"]
+[ext_resource type="PackedScene" uid="uid://dcmojjmgm8kpa" path="res://respawn_manager.tscn" id="5_85fcn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_26neo"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_q3x26"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wmyvf"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_afvad"]
+vertices = PackedVector3Array(-9.45933, 1.24751, -9.45502, -9.45933, 1.24751, 9.54498, 9.54067, 1.24751, 9.54498, 9.54067, 1.24751, -9.45502)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl7s0"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_o3dmt"]
+sky_material = SubResource("ProceduralSkyMaterial_bl7s0")
+
+[sub_resource type="Environment" id="Environment_wkp57"]
+background_mode = 2
+sky = SubResource("Sky_o3dmt")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Enviorment" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0906105, -0.0775933, -0.631436)
+script = ExtResource("1_ox378")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0923615, 0.141129, 0.0637932)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_26neo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 20, -0.0516958, 0.106377, -0.0188112)
+mesh = SubResource("BoxMesh_q3x26")
+surface_material_override/0 = SubResource("StandardMaterial3D_wmyvf")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0923615, -0.141129, -0.0637932)
+navigation_mesh = SubResource("NavigationMesh_afvad")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_wkp57")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="player" parent="." instance=ExtResource("3_85hsc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65742, -5.7714)
+
+[node name="Enemy" parent="." instance=ExtResource("2_skxeu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0235329, 1.64113, 7.02785)
+
+[node name="Healthpack" parent="." instance=ExtResource("3_yhs5l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.36612, 1.14113, -1.41521)
+
+[node name="RespawnManager" parent="." instance=ExtResource("5_85fcn")]
+
+[node name="Marker3D" type="Marker3D" parent="RespawnManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.45058e-09, 0, 7)
+
+[node name="Marker3D2" type="Marker3D" parent="RespawnManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 7)
+
+[node name="Marker3D3" type="Marker3D" parent="RespawnManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 7)
+
+[connection signal="enemy_died" from="Enemy" to="RespawnManager" method="spawn_enemy"]

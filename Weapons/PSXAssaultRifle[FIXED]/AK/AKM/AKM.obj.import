@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c14dk6wb77wso"
+path="res://.godot/imported/AKM.obj-728a7cf3865094849827711e3fd95f25.mesh"
+
+[deps]
+
+files=["res://.godot/imported/AKM.obj-728a7cf3865094849827711e3fd95f25.mesh"]
+
+source_file="res://Weapons/PSXAssaultRifle[FIXED]/AK/AKM/AKM.obj"
+dest_files=["res://.godot/imported/AKM.obj-728a7cf3865094849827711e3fd95f25.mesh", "res://.godot/imported/AKM.obj-728a7cf3865094849827711e3fd95f25.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

@@ -1,0 +1,234 @@
+[gd_scene load_steps=10 format=3 uid="uid://bgt4xny6dwyap"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl7s0"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_o3dmt"]
+sky_material = SubResource("ProceduralSkyMaterial_bl7s0")
+
+[sub_resource type="Environment" id="Environment_wkp57"]
+background_mode = 2
+sky = SubResource("Sky_o3dmt")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_q3x26"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_26neo"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="GDScript" id="GDScript_uww0w"]
+script/source = "extends CharacterBody3D
+
+# Character Nodes
+@onready var nacke: Node3D = $Nacke
+@onready var huvud: Node3D = $Nacke/Huvud
+@onready var standing_collision: CollisionShape3D = $Standing_collision
+@onready var crouching_collision: CollisionShape3D = $Crouching_collision
+@onready var ray_cast_3d: RayCast3D = $RayCast3D
+
+
+var current_speed = 5.0
+var lerp_speed = 13.0
+var direction = Vector3.ZERO
+var crouching_height= -0.4
+var slide_timer = 0.0
+var slide_timer_max = 1.0
+var walking = false
+var sprinting = false
+var crouching = false
+var free_looking = false
+var slide = false
+var slide_vector = Vector2.ZERO
+
+const walking_speed = 5.0
+
+const sprinting_speed = 8.0
+
+const crouching_speed = 3.0
+
+const jump_velocity = 4.5
+
+const mouse_sensitivty = 0.2
+
+func _unhandled_input(event):
+#Detta är en funktion som gör att när jag trycker \"ESC\" så visar den mitt mus pekare
+	if event.is_action_pressed(\"ui_cancel\"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+#Detta är en funktion som gör att när jag trycker vänster click på musen så låser den in mitt mus in i skärmen
+	if event.is_action_pressed(\"left_click\"):
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+#kamera kontroll
+func _input(event):
+	if event is InputEventMouseMotion:
+		if free_looking:
+			Nacke.rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivty))
+		else:
+			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivty))
+		huvud.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivty))
+		huvud.rotation.x = clamp(huvud.rotation.x,deg_to_rad(-90),deg_to_rad(90))
+
+
+func _physics_process(delta):
+	
+	#Tar våra inputs och översätter de till rörelse i spelet
+	var input_dir := Input.get_vector(\"left\", \"right\", \"up\", \"down\")
+	
+	#crouch logik
+	if Input.is_action_pressed(\"crouch\"):
+		current_speed = crouching_speed
+		huvud.position.y = lerp(huvud.position.y, + crouching_height,delta*lerp_speed)
+		
+		standing_collision.disabled = true
+		crouching_collision.disabled = false
+		
+		#slide början logik
+		
+		
+		if sprinting && input_dir != Vector2.ZERO:
+			slide = true
+			slide_timer = slide_timer_max
+			slide_vector = input_dir
+			print(\"slide Begin\")
+		
+		walking = false
+		sprinting = false
+		crouching = true
+		free_looking = false
+		slide = false
+		
+	elif !ray_cast_3d.is_colliding():
+		
+		#standing logik
+		crouching_collision.disabled = true
+		standing_collision.disabled = false
+		
+		huvud.position.y = lerp(huvud.position.y,0.0,delta*lerp_speed)
+		
+
+		
+	#sprint logik
+	if  Input.is_action_pressed(\"sprint\"):
+		current_speed = sprinting_speed
+		
+		walking = false
+		sprinting = true
+		crouching = false
+		
+	else: 
+		current_speed = walking_speed
+		
+		walking = true
+		sprinting = false
+		crouching = false
+		
+		
+	#Ta hand om freelook
+	if Input.is_action_just_pressed(\"free_look\"):
+		free_looking = true
+	else:
+		free_looking = false
+		
+	#Slide logik
+	
+	if slide:
+		slide_timer -= delta
+		if slide_timer <= 0:
+			slide = false
+	print(\"slide end\")
+	
+	# Gravitation logik.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Hopp logik.
+	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
+		velocity.y = jump_velocity
+		
+	direction = lerp(direction,(transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(),delta*lerp_speed)
+	
+	if slide:
+		direction = (transform.basis * Vector3(slide_vector.x,0,slide_vector.y)).normalized()
+	
+	if direction:
+		velocity.x = direction.x * current_speed
+		velocity.z = direction.z * current_speed
+		
+		if slide:
+			velocity.x = direction.x * slide_timer
+			velocity.z = direction.z * slide_timer
+	else:
+		velocity.x = move_toward(velocity.x, 0, current_speed)
+		velocity.z = move_toward(velocity.z, 0, current_speed)
+
+	move_and_slide()
+"
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7flhe"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ffllk"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_523sh"]
+height = 1.2
+
+[node name="Enviorment" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_wkp57")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(10.0896, 0, 0, 0, 1.00896, 0, 0, 0, 10.0896, 0, 0, 0)
+mesh = SubResource("BoxMesh_q3x26")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_26neo")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0602465, 3.08942, 7.5774)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+transform = Transform3D(10.0896, 0, 0, 0, 1.00896, 0, 0, 0, 10.0896, 0, -0.182543, 0)
+mesh = SubResource("BoxMesh_q3x26")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.19718, 0)
+shape = SubResource("BoxShape3D_26neo")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0670266, 0.72635, 0.00763167)
+script = SubResource("GDScript_uww0w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.812794, 0)
+mesh = SubResource("CapsuleMesh_7flhe")
+skeleton = NodePath("../Nacke/Huvud")
+
+[node name="Standing_collision" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.813, 0)
+shape = SubResource("CapsuleShape3D_ffllk")
+
+[node name="Crouching_collision" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.421087, 0)
+shape = SubResource("CapsuleShape3D_523sh")
+disabled = true
+
+[node name="RayCast3D" type="RayCast3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00114024, -0.0131252, -0.000304323)
+target_position = Vector3(0, 2, 0)
+
+[node name="Nacke" type="Node3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Huvud" type="Node3D" parent="CharacterBody3D/Nacke"]
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/Nacke/Huvud"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000432968, 1.00946, 0.00028801)
