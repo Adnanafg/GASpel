@@ -11,7 +11,8 @@ class_name player
 @onready var camera_3d: Camera3D = $Nacke/Huvud/Camera3D
 @onready var gun_animation = $Nacke/Huvud/Camera3D/AK74U/AnimationPlayer
 @onready var pistolpipa = $Nacke/Huvud/Camera3D/AK74U/RayCast3D
-@onready var healthbar: ProgressBar = $Nacke/Huvud/Camera3D/Control/healthbar
+@onready var healthbar: ProgressBar = $Nacke/Huvud/Camera3D/AK74U/UI/healthbar
+
 
 
 
@@ -46,7 +47,7 @@ var crouching = false
 
 var direction = Vector3.ZERO
 var free_looking = false
-var free_look_tilt = 2.5
+var free_look_tilt = 1.5
 
 
 
