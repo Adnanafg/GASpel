@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgt4xny6dwyap"]
+[gd_scene load_steps=15 format=3 uid="uid://bgt4xny6dwyap"]
 
 [ext_resource type="Script" path="res://Scripts/level_1.gd" id="1_ox378"]
 [ext_resource type="PackedScene" uid="uid://c3xjf8qprn8w2" path="res://Scenes/main_menu.tscn" id="2_c1keg"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://ypmseu0myrtk" path="res://Scenes/player.tscn" id="3_85hsc"]
 [ext_resource type="PackedScene" uid="uid://dscvlaflyefe3" path="res://Scenes/healthpack.tscn" id="3_yhs5l"]
 [ext_resource type="PackedScene" uid="uid://dcmojjmgm8kpa" path="res://Scenes/respawn_manager.tscn" id="5_85fcn"]
+[ext_resource type="PackedScene" uid="uid://d3ohvr0v2x2xf" path="res://Scenes/options_menu.tscn" id="7_fbpcj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl7s0"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -94,5 +95,8 @@ offset_left = 148.992
 offset_top = 334.773
 offset_right = 148.992
 offset_bottom = 334.773
+
+[node name="Options_Menu" parent="." instance=ExtResource("7_fbpcj")]
+visible = false
 
 [connection signal="enemy_died" from="Enemy" to="RespawnManager" method="_on_enemy_dead"]

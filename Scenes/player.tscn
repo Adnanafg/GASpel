@@ -61,29 +61,7 @@ fov = 56.1501
 [node name="AK74U" parent="Nacke/Huvud/Camera3D" instance=ExtResource("2_ebnk8")]
 transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 0.094055, -0.223819, -0.196197)
 
-[node name="Control" type="Control" parent="Nacke/Huvud/Camera3D"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 1919.0
-offset_bottom = 1076.0
-
-[node name="healthbar" type="ProgressBar" parent="Nacke/Huvud/Camera3D/Control"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 327.0
-offset_right = 277.0
-offset_bottom = 362.0
-grow_vertical = 0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/background = SubResource("StyleBoxFlat_gargc")
-theme_override_styles/fill = SubResource("StyleBoxFlat_yilwg")
-value = 100.0
-metadata/_edit_use_anchors_ = true
-
-[node name="UI" type="Control" parent="."]
+[node name="UI" type="Control" parent="Nacke/Huvud/Camera3D/AK74U"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -97,7 +75,23 @@ grow_vertical = 2
 mouse_filter = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Crosshair" type="CenterContainer" parent="UI"]
+[node name="healthbar" type="ProgressBar" parent="Nacke/Huvud/Camera3D/AK74U/UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.987
+anchor_bottom = 0.987
+offset_left = -21.0
+offset_top = -41.9601
+offset_right = 255.0
+offset_bottom = -6.96008
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/background = SubResource("StyleBoxFlat_gargc")
+theme_override_styles/fill = SubResource("StyleBoxFlat_yilwg")
+value = 100.0
+metadata/_edit_use_anchors_ = true
+
+[node name="Crosshair" type="CenterContainer" parent="Nacke/Huvud/Camera3D/AK74U/UI"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -112,22 +106,22 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_i48co")
 
-[node name="Top" type="Line2D" parent="UI/Crosshair"]
+[node name="Top" type="Line2D" parent="Nacke/Huvud/Camera3D/AK74U/UI/Crosshair"]
 points = PackedVector2Array(0, -5, 0, -15)
 width = 2.0
 default_color = Color(0, 1, 0, 1)
 
-[node name="Right" type="Line2D" parent="UI/Crosshair"]
+[node name="Right" type="Line2D" parent="Nacke/Huvud/Camera3D/AK74U/UI/Crosshair"]
 points = PackedVector2Array(5, 0, 15, 0)
 width = 2.0
 default_color = Color(0, 1, 0, 1)
 
-[node name="Bottom" type="Line2D" parent="UI/Crosshair"]
+[node name="Bottom" type="Line2D" parent="Nacke/Huvud/Camera3D/AK74U/UI/Crosshair"]
 points = PackedVector2Array(0, 5, 0, 15)
 width = 2.0
 default_color = Color(0, 1, 0, 1)
 
-[node name="Left" type="Line2D" parent="UI/Crosshair"]
+[node name="Left" type="Line2D" parent="Nacke/Huvud/Camera3D/AK74U/UI/Crosshair"]
 points = PackedVector2Array(-5, 0, -15, 0)
 width = 2.0
 default_color = Color(0, 1, 0, 1)
