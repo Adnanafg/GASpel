@@ -195,7 +195,7 @@ func take_damage(amount: int) -> void:
 		current_health -= amount
 		if current_health <= 0:
 			die()
-		update_health_bar()  # Ensure health bar is updated
+		update_health_bar()  
 		print("Player took damage, current health:", current_health)
 
 
@@ -204,7 +204,7 @@ func heal(amount: int) -> void:
 		current_health += amount
 		if current_health > max_health:
 			current_health = max_health
-		update_health_bar()  # Ensure health bar is updated
+		update_health_bar()
 		print("Player healed, current health:", current_health)
 
 
