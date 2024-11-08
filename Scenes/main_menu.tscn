@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/main_menu.gd" id="1_y0oe0"]
 
 [node name="MainMenu" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5

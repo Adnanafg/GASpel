@@ -4,7 +4,7 @@ class_name player
 
 # Character Nodes
 @onready var nacke: Node3D = $Nacke
-@onready var huvud: Node3D = $Nacke/Huvud
+@onready var Huvud: Node3D = $Nacke/Huvud
 @onready var standing_collision: CollisionShape3D = $Standing_collision
 @onready var crouching_collision: CollisionShape3D = $Crouching_collision
 @onready var ray_cast_3d: RayCast3D = $RayCast3D
@@ -12,6 +12,8 @@ class_name player
 @onready var gun_animation = $Nacke/Huvud/Camera3D/AK74U/AnimationPlayer
 @onready var pistolpipa = $Nacke/Huvud/Camera3D/AK74U/RayCast3D
 @onready var healthbar: ProgressBar = $Nacke/Huvud/Camera3D/AK74U/UI/healthbar
+
+
 
 
 
@@ -31,7 +33,6 @@ var instance
 @export var sprinting_speed = 8.0
 @export var crouching_speed = 3.0
 @export var jump_velocity = 4.5
-@export var mouse_sensitivty = 0.2
 @export var crouching_height= -0.4
 
 var slide_timer = 0.0
@@ -48,7 +49,7 @@ var crouching = false
 var direction = Vector3.ZERO
 var free_looking = false
 var free_look_tilt = 1.5
-
+var mouse_sensitivty = Settings.mouse_sensitivty
 
 
 func _unhandled_input(event):
@@ -69,8 +70,8 @@ func _input(event):
 			nacke.rotation.y = clamp(nacke.rotation.y,deg_to_rad(-100), deg_to_rad(100))
 		else:
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivty))
-		huvud.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivty))
-		huvud.rotation.x = clamp(huvud.rotation.x,deg_to_rad(-90),deg_to_rad(90))
+			Huvud.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivty))
+			Huvud.rotation.x = clamp(Huvud.rotation.x,deg_to_rad(-90),deg_to_rad(90))
 
 
 func _physics_process(delta):
@@ -89,7 +90,7 @@ func _physics_process(delta):
 #crouch logik
 	if Input.is_action_pressed("crouch"):
 		current_speed = crouching_speed
-		huvud.position.y = lerp(huvud.position.y, + crouching_height,delta*lerp_speed)
+		Huvud.position.y = lerp(Huvud.position.y, + crouching_height,delta*lerp_speed)
 		
 		standing_collision.disabled = true
 		crouching_collision.disabled = false
@@ -113,7 +114,7 @@ func _physics_process(delta):
 		crouching_collision.disabled = true
 		standing_collision.disabled = false
 		
-		huvud.position.y = lerp(huvud.position.y,0.0,delta*lerp_speed)
+		Huvud.position.y = lerp(Huvud.position.y,0.0,delta*lerp_speed)
 		
 		
 	#sprint logik

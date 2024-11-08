@@ -5,7 +5,7 @@ func _on_back_pressed() -> void:
 
 
 func _on_sensitivty_value_changed(value: float) -> void:
-	pass # Replace with function body.
+	Settings.mouse_sensitivty = value
 
 
 func _on_window_type_item_selected(index: int) -> void: 

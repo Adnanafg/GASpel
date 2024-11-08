@@ -45,22 +45,22 @@ environment = SubResource("Environment_wkp57")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="player" parent="." instance=ExtResource("3_85hsc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65742, -5.7714)
-
 [node name="Enemy" parent="." instance=ExtResource("2_skxeu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0235329, 1.64113, 7.02785)
 
-[node name="RespawnManager" parent="." instance=ExtResource("5_85fcn")]
-
-[node name="Marker3D" type="Marker3D" parent="RespawnManager"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.45058e-09, 1, 7)
-
-[node name="Marker3D2" type="Marker3D" parent="RespawnManager"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 7)
-
-[node name="Marker3D3" type="Marker3D" parent="RespawnManager"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, 7)
+[node name="player" parent="." instance=ExtResource("3_85hsc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65742, -5.7714)
+max_health = 100.0
+damage_value = 10
+heal_value = 25
+current_speed = 5.0
+lerp_speed = 16.0
+walking_speed = 5.0
+sprinting_speed = 8.0
+crouching_speed = 3.0
+jump_velocity = 4.5
+crouching_height = -0.4
+slide_speed = 10.0
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_afvad")
@@ -76,6 +76,16 @@ surface_material_override/0 = SubResource("StandardMaterial3D_wmyvf")
 transform = Transform3D(20, -0.00074136, -0.00864997, 0.0148319, 1, 0.0107208, 0.00864263, -0.000536347, 20, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_emb58")
 
+[node name="MainMenu" parent="." instance=ExtResource("2_c1keg")]
+visible = false
+offset_left = 148.992
+offset_top = 334.773
+offset_right = 148.992
+offset_bottom = 334.773
+
+[node name="Options_Menu" parent="." instance=ExtResource("7_fbpcj")]
+visible = false
+
 [node name="Healthpack" parent="." instance=ExtResource("3_yhs5l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.3661, 1.01268, -13.4198)
 
@@ -88,15 +98,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.3661, 1.02771, 14.5855)
 [node name="Healthpack4" parent="." instance=ExtResource("3_yhs5l")]
 transform = Transform3D(-1, 8.74073e-08, 1.64626e-09, -8.74073e-08, -0.999291, -0.0376553, -1.64626e-09, -0.0376553, 0.999291, -13.2678, 1.00645, 13.1484)
 
-[node name="MainMenu" parent="." instance=ExtResource("2_c1keg")]
-process_mode = 3
-visible = false
-offset_left = 148.992
-offset_top = 334.773
-offset_right = 148.992
-offset_bottom = 334.773
+[node name="RespawnManager" parent="." instance=ExtResource("5_85fcn")]
 
-[node name="Options_Menu" parent="." instance=ExtResource("7_fbpcj")]
-visible = false
+[node name="Marker3D" type="Marker3D" parent="RespawnManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.45058e-09, 1, 7)
+
+[node name="Marker3D2" type="Marker3D" parent="RespawnManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 7)
+
+[node name="Marker3D3" type="Marker3D" parent="RespawnManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, 7)
 
 [connection signal="enemy_died" from="Enemy" to="RespawnManager" method="_on_enemy_dead"]
