@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://bgt4xny6dwyap"]
+[gd_scene load_steps=16 format=3 uid="uid://bgt4xny6dwyap"]
 
 [ext_resource type="Script" path="res://Scripts/level_1.gd" id="1_ox378"]
 [ext_resource type="PackedScene" uid="uid://c3xjf8qprn8w2" path="res://Scenes/main_menu.tscn" id="2_c1keg"]
 [ext_resource type="PackedScene" uid="uid://b83xuyrrc1kva" path="res://Scenes/enemy.tscn" id="2_skxeu"]
 [ext_resource type="PackedScene" uid="uid://ypmseu0myrtk" path="res://Scenes/player.tscn" id="3_85hsc"]
 [ext_resource type="PackedScene" uid="uid://dscvlaflyefe3" path="res://Scenes/healthpack.tscn" id="3_yhs5l"]
+[ext_resource type="PackedScene" uid="uid://3qi3i2fain8a" path="res://Scenes/Player_ui.tscn" id="4_67ddh"]
 [ext_resource type="PackedScene" uid="uid://dcmojjmgm8kpa" path="res://Scenes/respawn_manager.tscn" id="5_85fcn"]
 [ext_resource type="PackedScene" uid="uid://d3ohvr0v2x2xf" path="res://Scenes/options_menu.tscn" id="7_fbpcj"]
 
@@ -50,17 +51,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0235329, 1.64113, 7.02785)
 
 [node name="player" parent="." instance=ExtResource("3_85hsc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65742, -5.7714)
-max_health = 100.0
-damage_value = 10
-heal_value = 25
-current_speed = 5.0
 lerp_speed = 16.0
-walking_speed = 5.0
-sprinting_speed = 8.0
-crouching_speed = 3.0
-jump_velocity = 4.5
-crouching_height = -0.4
-slide_speed = 10.0
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_afvad")
@@ -82,6 +73,13 @@ offset_left = 148.992
 offset_top = 334.773
 offset_right = 148.992
 offset_bottom = 334.773
+
+[node name="UI" parent="MainMenu" instance=ExtResource("4_67ddh")]
+layout_mode = 1
+offset_left = -725.995
+offset_top = -569.182
+offset_right = -725.995
+offset_bottom = -569.182
 
 [node name="Options_Menu" parent="." instance=ExtResource("7_fbpcj")]
 visible = false
