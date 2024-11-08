@@ -1,3 +1,3 @@
 extends Node
 
-var mouse_sensitivty = 0.2
+var mouse_sensitivty : float = 0.2

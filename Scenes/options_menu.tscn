@@ -23,7 +23,7 @@ offset_bottom = 137.0
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Sensitivty" type="SpinBox" parent="MarginContainer/VBoxContainer"]
+[node name="Sensitivty" type="HScrollBar" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="FullScreen" type="CheckBox" parent="MarginContainer/VBoxContainer"]
@@ -46,6 +46,5 @@ text = "Sensitivity
 "
 metadata/_edit_use_anchors_ = true
 
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/Sensitivty" to="." method="_on_sensitivty_value_changed"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/FullScreen" to="." method="_on_full_screen_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
