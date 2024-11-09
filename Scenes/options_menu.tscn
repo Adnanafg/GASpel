@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3ohvr0v2x2xf"]
+[gd_scene load_steps=3 format=3 uid="uid://d3ohvr0v2x2xf"]
 
 [ext_resource type="Script" path="res://Scripts/options_menu.gd" id="1_ybe2t"]
+
+[sub_resource type="Theme" id="Theme_wwaen"]
+MarginContainer/constants/margin_bottom = 0
+MarginContainer/constants/margin_left = 0
+MarginContainer/constants/margin_right = 0
+MarginContainer/constants/margin_top = 0
+VBoxContainer/constants/separation = 9
 
 [node name="Options_Menu" type="Control"]
 process_mode = 3
@@ -8,11 +15,9 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_right = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1.5, 1.5)
+theme = SubResource("Theme_wwaen")
 script = ExtResource("1_ybe2t")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -26,6 +31,9 @@ layout_mode = 2
 [node name="Sensitivty" type="HScrollBar" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="FullScreen" type="CheckBox" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Fullscreen"
@@ -37,7 +45,12 @@ text = "Back
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 process_mode = 1
-layout_mode = 0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.003125
+anchor_top = 0.00185185
+anchor_right = 0.003125
+anchor_bottom = 0.00185185
 offset_left = 117.0
 offset_top = 4.0
 offset_right = 229.0
@@ -46,5 +59,7 @@ text = "Sensitivity
 "
 metadata/_edit_use_anchors_ = true
 
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Sensitivty" to="." method="_on_sensitivty_value_changed"]
+[connection signal="text_submitted" from="MarginContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/FullScreen" to="." method="_on_full_screen_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
