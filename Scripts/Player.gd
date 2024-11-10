@@ -65,7 +65,7 @@ func _unhandled_input(event):
 #kamera kontroll
 func _input(event):
 	if event is InputEventMouseMotion:
-		if free_looking:
+		if free_looking: 
 			nacke.rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivty))
 			nacke.rotation.y = clamp(nacke.rotation.y,deg_to_rad(-100), deg_to_rad(100))
 		else:
