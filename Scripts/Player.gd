@@ -40,8 +40,8 @@ var slide_timer_max = 1.2
 var slide = false
 var slide_vector = Vector2.ZERO
 @export var slide_speed = 10.0
-var can_slide = true
 
+var can_slide = true
 var walking = false
 var sprinting = false
 var crouching = false
@@ -118,7 +118,7 @@ func _physics_process(delta):
 		
 		
 	#sprint logik
-	if Input.is_action_just_pressed("sprint"):
+	if Input.is_action_just_pressed("sprint") and not sprinting:
 	# Låta spelare slida en gång per sprint
 		current_speed = sprinting_speed
 		walking = false
