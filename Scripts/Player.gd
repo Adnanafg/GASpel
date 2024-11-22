@@ -118,7 +118,7 @@ func _physics_process(delta):
 		
 		
 	#sprint logik
-	if Input.is_action_just_pressed("sprint") and not sprinting:
+	if Input.is_action_just_pressed("sprint"):
 	# Låta spelare slida en gång per sprint
 		current_speed = sprinting_speed
 		walking = false
@@ -197,7 +197,7 @@ func take_damage(amount: int) -> void:
 		if current_health <= 0:
 			die()
 		update_health_bar()  
-		print("Player took damage, current health:", current_health)
+		#print("Player took damage, current health:", current_health)
 
 
 func heal(amount: int) -> void:
@@ -206,7 +206,7 @@ func heal(amount: int) -> void:
 		if current_health > max_health:
 			current_health = max_health
 		update_health_bar()
-		print("Player healed, current health:", current_health)
+		#print("Player healed, current health:", current_health)
 
 
 func die () -> void:
