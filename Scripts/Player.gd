@@ -34,12 +34,13 @@ var instance
 @export var crouching_speed = 3.0
 @export var jump_velocity = 4.5
 @export var crouching_height= -0.4
+@export var slide_speed = 10.0	
 
 var slide_timer = 0.0
 var slide_timer_max = 1.2
 var slide = false
 var slide_vector = Vector2.ZERO
-@export var slide_speed = 10.0
+
 
 var can_slide = true
 var walking = false
@@ -148,7 +149,7 @@ func _physics_process(delta):
 		slide_timer -= delta
 		if slide_timer <= 0:
 			slide = false
-			print("slide slut")
+			#print("slide slut")
 			free_looking = false
 			
 	# Gravitation logik.
