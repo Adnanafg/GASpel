@@ -102,7 +102,7 @@ func _physics_process(delta):
 			slide_timer = slide_timer_max
 			slide_vector = input_dir
 			free_looking = true
-			print("slide start")
+			#print("slide start")
 			can_slide = false
 			
 		walking = false

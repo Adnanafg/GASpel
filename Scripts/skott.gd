@@ -41,8 +41,6 @@ func raycast_scan():
 			if result["collider"].has_method("take_damage"):
 				result["collider"].take_damage(damage)
 				#print("Hit", result["collider"])
-		#else:
-			#print("Hit non-enemy object, no damage applied.")
 
 
 #func _input(event):
